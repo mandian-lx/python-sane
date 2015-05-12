@@ -30,7 +30,7 @@ BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 BuildRequires:  python2-sphinx
 
-BuildRequires:  python-devel
+BuildRequires:  python3-devel
 BuildRequires:  python-setuptools
 BuildRequires:  python-sphinx
 
