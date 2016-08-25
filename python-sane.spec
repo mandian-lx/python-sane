@@ -51,8 +51,8 @@ various raster scanning devices such as flatbed scanners and digital cameras.
 
 %package -n %{name3}
 Summary:        Python module for using scanners
-Provides:       python2-pillow-sane = %{version}-%{release}
-Requires:       python2-numpy
+Provides:       python3-pillow-sane = %{version}-%{release}
+Requires:       python3-numpy
 
 %description -n %{name3}
 This package contains the sane module for Python which provides access to
