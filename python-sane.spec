@@ -1,5 +1,5 @@
-%global name2 python2-sane
-%global py2dir ../py2
+%global name3 python3-sane
+%global py3dir ../py3
 
 # Refer to the comment for Source0 below on how to obtain the source tarball
 # The saved file has format python-pillow-Sane-$version-$ahead-g$shortcommit.tar.gz
@@ -26,13 +26,13 @@ Source0:        https://github.com/python-pillow/Sane/tarball/%{commit}/python-p
 
 BuildRequires:  sane-devel
 
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-BuildRequires:  python2-sphinx
-
-BuildRequires:  python3-devel
+BuildRequires:  python-devel
 BuildRequires:  python-setuptools
 BuildRequires:  python-sphinx
+
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-sphinx
 
 Obsoletes:      python-pillow-sane < 2.7.0-1
 Provides:       python-pillow-sane = %{version}-%{release}
@@ -43,57 +43,66 @@ Requires:       python-imaging
 This package contains the sane module for Python which provides access to
 various raster scanning devices such as flatbed scanners and digital cameras.
 
+%files
+%doc CHANGES.rst sanedoc.txt example.py doc/_build/html COPYING
+%{python2_sitearch}/*
 
-%package -n %{name2}
+#----------------------------------------------------------------------------
+
+%package -n %{name3}
 Summary:        Python module for using scanners
 Provides:       python2-pillow-sane = %{version}-%{release}
 Requires:       python2-numpy
 
-%description -n %{name2}
+%description -n %{name3}
 This package contains the sane module for Python which provides access to
 various raster scanning devices such as flatbed scanners and digital cameras.
 
+%files -n %{name3}
+%doc CHANGES.rst sanedoc.txt example.py doc/_build/html COPYING
+%{python3_sitearch}/*
+
+#----------------------------------------------------------------------------
 
 %prep
 %setup -q -n python-pillow-Sane-%{shortcommit}
 
 # Create Python 3 source tree
-rm -rf %{py2dir}
-mkdir %{py2dir}
-cp -a . %{py2dir}
-
+rm -rf %{py3dir}
+mkdir %{py3dir}
+cp -a . %{py3dir}
 
 %build
-# Build Python 3 modules
-find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python}|'
-CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+# Build Python 2 modules
+find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python2}|'
+CFLAGS="$RPM_OPT_FLAGS" %{__python2} setup.py build
 
 pushd doc
 make html
 rm -f _build/html/.buildinfo
 popd
 
-# Build Python 2 modules
-pushd %{py2dir}
-find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python2}|'
-CFLAGS="$RPM_OPT_FLAGS" %{__python2} setup.py build
+# Build Python 3 modules
+pushd %{py3dir}
+find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python3}|'
+CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+popd
 
-pushd doc
-make html SPHINXBUILD=sphinx-build-%py2_ver
+pushd doc SPHINXBUILD=sphinx-build-%py3_ver
+make html
 rm -f _build/html/.buildinfo
 popd
 
-
 %install
-# Install Python 3 modules
+# Install Python 2 modules
 %{__python} setup.py install --skip-build --root %{buildroot}
 
 # Fix non-standard-executable-perm
 chmod 0755 %{buildroot}%{python_sitearch}/*.so
 
-# Install Python 2 modules
+# Install Python 3 modules
 pushd %{py2dir}
-%{__python2} setup.py install --skip-build --root %{buildroot}
+%{__python3} setup.py install --skip-build --root %{buildroot}
 popd
 
 # Fix non-standard-executable-perm
@@ -105,13 +114,4 @@ make html SPHINXBUILD=sphinx-build-%python3_version
 rm -f _build/html/.buildinfo
 popd
 %endif
-
-
-%files
-%doc CHANGES.rst sanedoc.txt example.py doc/_build/html COPYING
-%{python3_sitearch}/*
-
-%files -n %{name2}
-%doc CHANGES.rst sanedoc.txt example.py doc/_build/html COPYING
-%{python2_sitearch}/*
 
