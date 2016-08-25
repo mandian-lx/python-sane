@@ -38,7 +38,7 @@ various raster scanning devices such as flatbed scanners and digital cameras.
 
 %files
 %doc CHANGES.rst sanedoc.txt example.py doc/_build/html COPYING
-%{python2_sitearch}/*
+%{python_sitearch}/*
 
 #----------------------------------------------------------------------------
 
@@ -47,8 +47,8 @@ various raster scanning devices such as flatbed scanners and digital cameras.
 
 %build
 # Build Python 2 modules
-find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python2}|'
-CFLAGS="$RPM_OPT_FLAGS" %{__python2} setup.py build
+find -name '*.py' | xargs sed -i '1s|^#!.*python|#!%{__python}|'
+CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 
 pushd doc
 make html
